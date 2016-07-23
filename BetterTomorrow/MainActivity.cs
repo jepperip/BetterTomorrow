@@ -15,7 +15,6 @@ namespace BetterTomorrow
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
-			
 		}
 
 		protected override void OnResume()
