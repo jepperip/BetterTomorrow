@@ -75,6 +75,7 @@ namespace BetterTomorrow
 										nextDayAverage += parameter.Values[0];
 										nextDayCount++;
 									}
+
 									break;
 								}
 							}
@@ -82,6 +83,11 @@ namespace BetterTomorrow
 
 					currentDayAverage /= currentDayCount;
 					nextDayAverage /= nextDayCount;
+					var delta = nextDayAverage - currentDayAverage;
+					var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
+					resultView.Text = nextDayAverage > currentDayAverage ?
+					$"Hitler was right all along {delta}" :
+					$"The holocaust never happened {delta}";
 				}
 			});
 		}
