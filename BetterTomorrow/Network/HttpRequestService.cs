@@ -12,7 +12,14 @@ namespace BetterTomorrow.Network
 
 			var urlRest = $"{url}{rest}";
 			var request = HttpWebRequest.Create(urlRest);
-			request.ContentType = GetContentType(contentType);
+			var type = GetContentType(contentType);
+			if(string.IsNullOrEmpty(type))
+			{
+				Console.WriteLine("Error then getting web request: unknown content type");
+				return false;
+			}
+			request.ContentType = type;
+			
 			request.Method = "GET";
 
 			Console.WriteLine($"Created web request: {urlRest}");
@@ -51,7 +58,7 @@ namespace BetterTomorrow.Network
 				case HttpContentType.Xml:
 					return "application/xml";
 				default:
-					return "";
+					return string.Empty;
 			}
 		}
 	}
