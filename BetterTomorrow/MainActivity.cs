@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Widget;
 using BetterTomorrow.Network;
 using BetterTomorrow.Network.SMHI;
+using BetterTomorrow.Network.SMHI.Data;
 using System;
 
 namespace BetterTomorrow
@@ -13,10 +14,9 @@ namespace BetterTomorrow
 	public class MainActivity : Activity
 	{
 		Locator locator;
-		
+
 		protected override void OnCreate(Bundle bundle)
 		{
-			var test = MultiPointGetRequestBuilder.Build(DateTime.Now, WheaterProperty.AirTemperature);
 			base.OnCreate(bundle);
 			locator = new Locator((LocationManager)GetSystemService(LocationService));
 
@@ -30,7 +30,6 @@ namespace BetterTomorrow
 			var statusView = FindViewById<CheckBox>(Resource.Id.OnlineCheckBox);
 			statusView.Checked = IsConnected;
 
-			//var latView = FindViewById<TextView>(Resource.Id)
 			var location = locator.RequestLocation((loc) =>
 			{
 				var latView = FindViewById<TextView>(Resource.Id.latitudeTextView);
@@ -45,6 +44,45 @@ namespace BetterTomorrow
 					"/api/category/pmp2g/version/2/geotype/point/" +
 					$"lon/{loc.Longitude.ToString("F6")}/lat/{loc.Latitude.ToString("F6")}/data.json",
 					HttpContentType.Json, out jsonData);
+
+				SmhiResponse r;
+				if(new SmhiJsonParser().TryParse(jsonData, out r))
+				{
+					var now = DateTime.Now;
+
+					float currentDayAverage = 0.0f;
+					int currentDayCount = 0;
+					float nextDayAverage = 0.0f;
+					int nextDayCount = 0;
+					foreach(var timeSerie in r.TimeSeries)
+					{
+						if(timeSerie.ValidTime.DayOfYear > now.DayOfYear + 2)
+						{
+							break;
+						}
+
+						foreach (var parameter in timeSerie.Parameters)
+							{
+								if(string.Equals(parameter.Name,"t"))
+								{
+									if(timeSerie.ValidTime.DayOfYear == now.DayOfYear)
+									{
+										currentDayAverage += parameter.Values[0];
+										currentDayCount++;
+									}
+									else
+									{
+										nextDayAverage += parameter.Values[0];
+										nextDayCount++;
+									}
+									break;
+								}
+							}
+					}
+
+					currentDayAverage /= currentDayCount;
+					nextDayAverage /= nextDayCount;
+				}
 			});
 		}
 
