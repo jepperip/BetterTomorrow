@@ -13,4 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/OnlineCheckBox" />
+    <TextView
+        android:text="lat :"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/latitudeTextView" />
+    <TextView
+        android:text="long :"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/longitudeTextView" />
 </LinearLayout>

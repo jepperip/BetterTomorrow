@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Locator.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Network\HttpContentType.cs" />
     <Compile Include="Network\HttpRequestService.cs" />
