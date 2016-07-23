@@ -36,6 +36,12 @@ namespace BetterTomorrow
 				latView.Text = "Lat : " + loc.Latitude;
 				longView.Text = "Long : " + loc.Longitude;
 
+				string jsonData;
+				var res = HttpRequestService.TryGet(
+					GetString(Resource.String.SMHI_SERVICE_URL),
+					"/api/category/pmp2g/version/2/geotype/point/" +
+					$"lon/{loc.Longitude.ToString("F6")}/lat/{loc.Latitude.ToString("F6")}/data.json",
+					HttpContentType.Json, out jsonData);
 			});
 		}
 
