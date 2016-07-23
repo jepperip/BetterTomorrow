@@ -19,7 +19,7 @@ namespace BetterTomorrow
 		{
 			this.onLocationReceived = onLocationReceived;
 			var provider = locationManager.GetBestProvider(
-				new Criteria { Accuracy = Accuracy.Coarse },
+				new Criteria { Accuracy = Accuracy.NoRequirement },
 				true);
 
 			locationManager.RequestLocationUpdates(provider, 0, 0, this);

@@ -4,6 +4,8 @@ using Android.Net;
 using Android.OS;
 using Android.Widget;
 using BetterTomorrow.Network;
+using BetterTomorrow.Network.SMHI;
+using System;
 
 namespace BetterTomorrow
 {
@@ -11,9 +13,10 @@ namespace BetterTomorrow
 	public class MainActivity : Activity
 	{
 		Locator locator;
-
+		
 		protected override void OnCreate(Bundle bundle)
 		{
+			var test = MultiPointGetRequestBuilder.Build(DateTime.Now, WheaterProperty.AirTemperature);
 			base.OnCreate(bundle);
 			locator = new Locator((LocationManager)GetSystemService(LocationService));
 
