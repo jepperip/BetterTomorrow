@@ -1,11 +1,11 @@
-namespace BetterTomorrow.WheaterDataProvider
+namespace BetterTomorrow.WeatherDataProvider
 {
-	public enum WheaterProperty
+	public enum WeatherProperty
 	{
 		AirTemperature,
 		WindSpeed,
 		ThunderProbability,
 		RelativeHumidity,
-		WheaterSymbol
+		WeatherSymbol
 	}
 }

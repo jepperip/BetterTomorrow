@@ -1,16 +1,16 @@
 using System;
 
-namespace BetterTomorrow.WheaterDataProvider
+namespace BetterTomorrow.WeatherDataProvider
 {
-	public abstract class Wheater
+	public abstract class Weather
 	{
-		protected Wheater(float value)
+		protected Weather(float value)
 		{
 			Value = value;
 		}
 
 		public float Value { get; }
 
-		public abstract bool BetterThan(Wheater other);
+		public abstract bool BetterThan(Weather other);
 	}
 }
