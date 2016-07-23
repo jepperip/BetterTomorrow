@@ -36,4 +36,3 @@ e:\Users\Jeppe\Visual Studio 2015\Projects\BetterTomorrow\BetterTomorrow\obj\Deb
 e:\Users\Jeppe\Visual Studio 2015\Projects\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Xml.dll.mdb
 e:\Users\Jeppe\Visual Studio 2015\Projects\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Xml.Linq.dll.mdb
 E:\Users\Jeppe\Visual Studio 2015\Projects\BetterTomorrow\BetterTomorrow\obj\Debug\BetterTomorrow.dll.mdb
-E:\Users\Jeppe\Visual Studio 2015\Projects\BetterTomorrow\BetterTomorrow\bin\Debug\BetterTomorrow.dll.mdb

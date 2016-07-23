@@ -1,4 +1,0 @@
-BetterTomorrow.MainActivity, BetterTomorrow;md54f15a97a84219d42d2cce467e047da71.MainActivity
-BetterTomorrow.MainActivity, BetterTomorrow, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md54f15a97a84219d42d2cce467e047da71.MainActivity
-BetterTomorrow.MainActivity;md54f15a97a84219d42d2cce467e047da71.MainActivity
-bettertomorrow.MainActivity;md54f15a97a84219d42d2cce467e047da71.MainActivity
