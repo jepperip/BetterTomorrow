@@ -81,6 +81,8 @@ E:\GitHub\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Runtime.
 E:\GitHub\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.ServiceModel.Internals.dll.mdb
 E:\GitHub\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Xml.dll.mdb
 E:\GitHub\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Xml.Linq.dll.mdb
+E:\GitHub\BetterTomorrow\BetterTomorrow\bin\Debug\System.Json.dll.mdb
+E:\GitHub\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Json.dll.mdb
 E:\GitHub\BetterTomorrow\BetterTomorrow\obj\Debug\BetterTomorrow.dll.mdb
 J:\Github\BetterTomorrow\BetterTomorrow\obj\Debug\BetterTomorrow.csprojResolveAssemblyReference.cache
 J:\Github\BetterTomorrow\BetterTomorrow\bin\Debug\BetterTomorrow.dll
