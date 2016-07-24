@@ -29,7 +29,8 @@ namespace BetterTomorrow
 
 		public void OnLocationChanged(Location location)
 		{
-			onLocationReceived(location);
+			onLocationReceived?.Invoke(location);
+			onLocationReceived = null;
 			locationManager.RemoveUpdates(this);
 		}
 
