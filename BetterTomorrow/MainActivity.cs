@@ -1,11 +1,15 @@
-﻿using Android.App;
+﻿using Android.Animation;
+using Android.App;
+using Android.Graphics;
 using Android.Locations;
 using Android.Net;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using BetterTomorrow.Network;
 using BetterTomorrow.Network.SMHI;
 using BetterTomorrow.Network.SMHI.Data;
+using BetterTomorrow.UI;
 using System;
 
 namespace BetterTomorrow
@@ -14,11 +18,13 @@ namespace BetterTomorrow
 	public class MainActivity : Activity
 	{
 		Locator locator;
+		AnimationStack animationStack;
 
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
 			locator = new Locator((LocationManager)GetSystemService(LocationService));
+			animationStack = new AnimationStack();
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -30,7 +36,7 @@ namespace BetterTomorrow
 			var statusView = FindViewById<CheckBox>(Resource.Id.OnlineCheckBox);
 			statusView.Checked = IsConnected;
 
-			var location = locator.RequestLocation(OnLocationReceived);
+			locator.RequestLocation(OnLocationReceived);
 		}
 
 		private void OnLocationReceived(Location loc)
@@ -87,11 +93,48 @@ namespace BetterTomorrow
 				currentDayAverage /= currentDayCount;
 				nextDayAverage /= nextDayCount;
 				var delta = nextDayAverage - currentDayAverage;
+
+				Animate();
+
 				var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
 				resultView.Text = nextDayAverage > currentDayAverage ?
 				$"Hitler was right all along {delta}" :
 				$"The holocaust never happened {delta}";
 			}
+		}
+
+		private void Animate()
+		{
+			var statusView = FindViewById<CheckBox>(Resource.Id.OnlineCheckBox);
+			var onlineTextView = FindViewById<TextView>(Resource.Id.textView1);
+			var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
+
+			animationStack.PushAnimation(new TextViewColorAnimator(
+					resultView,
+					0,
+					resultView.TextColors.DefaultColor,
+					2000));
+
+			animationStack.PushAnimation(new ViewPositionAnimator(
+				onlineTextView,
+				0.0f,
+				onlineTextView.GetX(),
+				onlineTextView.GetY(),
+				onlineTextView.GetY(),
+				2000));
+
+			animationStack.AddDelay(2000);
+
+			animationStack.PushAnimation(new ViewPositionAnimator(
+				statusView,
+				0.0f,
+				statusView.GetX(),
+				statusView.GetY(),
+				statusView.GetY(),
+				2000));
+
+			animationStack.Start();
+			animationStack.Clear();
 		}
 
 		private bool IsConnected

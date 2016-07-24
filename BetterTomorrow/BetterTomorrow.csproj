@@ -66,6 +66,7 @@
     <Compile Include="Network\SMHI\SmhiJsonParser.cs" />
     <Compile Include="Network\SMHI\Data\SmhiResponse.cs" />
     <Compile Include="Network\SMHI\Data\TimeSerie.cs" />
+    <Compile Include="UI\AnimationStack.cs" />
     <Compile Include="WheaterDataProvider\AirTemperature.cs" />
     <Compile Include="WheaterDataProvider\WeatherProperty.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
