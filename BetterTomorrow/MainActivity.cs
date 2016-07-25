@@ -15,11 +15,11 @@ using System;
 namespace BetterTomorrow
 {
 	[Activity(Label = "BetterTomorrow", MainLauncher = true, Icon = "@drawable/icon")]
-	public class MainActivity : Activity
+	public class MainActivity : Activity, ViewTreeObserver.IOnGlobalLayoutListener
 	{
 		Locator locator;
 		AnimationStack animationStack;
-
+		View mainView;
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
@@ -28,6 +28,8 @@ namespace BetterTomorrow
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
+			mainView = FindViewById<View>(Resource.Id.mainView);
+			mainView.ViewTreeObserver.AddOnGlobalLayoutListener(this);
 		}
 
 		protected override void OnResume()
@@ -94,12 +96,18 @@ namespace BetterTomorrow
 				nextDayAverage /= nextDayCount;
 				var delta = nextDayAverage - currentDayAverage;
 
-				Animate();
-
 				var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
 				resultView.Text = nextDayAverage > currentDayAverage ?
 				$"Hitler was right all along {delta}" :
 				$"The holocaust never happened {delta}";
+
+				animationStack.PushAnimation(new TextViewColorAnimator(
+						resultView,
+						0,
+						resultView.TextColors.DefaultColor,
+						2000));
+				animationStack.Start();
+				animationStack.Clear();
 			}
 		}
 
@@ -107,13 +115,9 @@ namespace BetterTomorrow
 		{
 			var statusView = FindViewById<CheckBox>(Resource.Id.OnlineCheckBox);
 			var onlineTextView = FindViewById<TextView>(Resource.Id.textView1);
-			var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
-
-			animationStack.PushAnimation(new TextViewColorAnimator(
-					resultView,
-					0,
-					resultView.TextColors.DefaultColor,
-					2000));
+			var latTextView = FindViewById<TextView>(Resource.Id.latitudeTextView);
+			var longTextView = FindViewById<TextView>(Resource.Id.longitudeTextView);
+			var duration = 800;
 
 			animationStack.PushAnimation(new ViewPositionAnimator(
 				onlineTextView,
@@ -121,9 +125,9 @@ namespace BetterTomorrow
 				onlineTextView.GetX(),
 				onlineTextView.GetY(),
 				onlineTextView.GetY(),
-				2000));
+				duration));
 
-			animationStack.AddDelay(2000);
+			animationStack.AddDelay(200);
 
 			animationStack.PushAnimation(new ViewPositionAnimator(
 				statusView,
@@ -131,10 +135,34 @@ namespace BetterTomorrow
 				statusView.GetX(),
 				statusView.GetY(),
 				statusView.GetY(),
-				2000));
+				duration));
+
+			animationStack.AddDelay(200);
+
+			animationStack.PushAnimation(new ViewPositionAnimator(
+				latTextView,
+				0.0f,
+				latTextView.GetX(),
+				latTextView.GetY(),
+				latTextView.GetY(),
+				duration));
+
+			animationStack.PushAnimation(new ViewPositionAnimator(
+				longTextView,
+				0.0f,
+				longTextView.GetX(),
+				longTextView.GetY(),
+				longTextView.GetY(),
+				duration));
 
 			animationStack.Start();
 			animationStack.Clear();
+		}
+
+		public void OnGlobalLayout()
+		{
+			mainView.ViewTreeObserver.RemoveOnGlobalLayoutListener(this);
+			Animate();
 		}
 
 		private bool IsConnected
