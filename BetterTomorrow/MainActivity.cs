@@ -46,9 +46,15 @@ namespace BetterTomorrow
 
             SetSampleTime();
 
-            if (IsConnected)
+		    Location defaultLocation = new Location("asd")
 		    {
-                locator.RequestLocation(OnLocationReceived);
+		        Latitude = 55,
+		        Longitude = 13
+		    };
+
+		    if (IsConnected)
+		    {
+                locator.RequestLocation(OnLocationReceived, defaultLocation);
 		    }
 		}
 
@@ -210,7 +216,6 @@ namespace BetterTomorrow
 				longTextView.GetY(),
 				longTextView.GetY(),
 				duration));
-
 
             animationStack.Start();
 			animationStack.Clear();

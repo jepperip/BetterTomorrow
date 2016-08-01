@@ -5,17 +5,23 @@ using Android.Runtime;
 
 namespace BetterTomorrow
 {
-	class Locator : Java.Lang.Object, ILocationListener
+	public class Locator : Java.Lang.Object, ILocationListener
 	{
-		private LocationManager locationManager;
+		private readonly LocationManager locationManager;
 		private Action<Location> onLocationReceived = null;
 		public Locator(LocationManager locationManager)
 		{
 			this.locationManager = locationManager;
 		}
 
-		public void RequestLocation(Action<Location> onLocationReceived)
+		public void RequestLocation(Action<Location> onLocationReceived, Location defaultLocation = null)
 		{
+		    if (!locationManager.IsProviderEnabled(LocationManager.GpsProvider))
+		    {
+		        onLocationReceived?.Invoke(defaultLocation);
+		        return;
+		    }
+
 			this.onLocationReceived = onLocationReceived;
 			var provider = locationManager.GetBestProvider(
 				new Criteria { Accuracy = Accuracy.NoRequirement },
