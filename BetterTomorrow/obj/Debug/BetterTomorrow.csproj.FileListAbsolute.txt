@@ -194,5 +194,6 @@ E:\Git\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Runtime.Ser
 E:\Git\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.ServiceModel.Internals.dll.mdb
 E:\Git\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Xml.dll.mdb
 E:\Git\BetterTomorrow\BetterTomorrow\obj\Debug\android\assets\System.Xml.Linq.dll.mdb
+E:\Git\BetterTomorrow\BetterTomorrow\obj\Debug\res\values\styles.xml
 E:\Git\BetterTomorrow\BetterTomorrow\obj\Debug\BetterTomorrow.dll.mdb
 E:\Git\BetterTomorrow\BetterTomorrow\bin\Debug\BetterTomorrow.dll.mdb

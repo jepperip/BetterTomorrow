@@ -11,12 +11,14 @@ using BetterTomorrow.UI;
 using System;
 using System.Globalization;
 using System.Linq;
+using Android.Content.Res;
+using Android.Media.Effect;
 using BetterTomorrow.UI.Views;
 using BetterTomorrow.WheaterData;
 
 namespace BetterTomorrow
 {
-	[Activity(Label = "BetterTomorrow", MainLauncher = true, Icon = "@drawable/icon")]
+	[Activity(Label = "BetterTomorrow", MainLauncher = true, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
 	public class MainActivity : Activity, ViewTreeObserver.IOnGlobalLayoutListener
 	{
 		private Locator locator;
@@ -60,7 +62,7 @@ namespace BetterTomorrow
 
 		private void OnLocationReceived(Location loc)
 		{
-			var latView = FindViewById<TextView>(Resource.Id.latitudeTextView);
+            var latView = FindViewById<TextView>(Resource.Id.latitudeTextView);
 			var longView = FindViewById<TextView>(Resource.Id.longitudeTextView);
 
 			latView.Text = "Lat : " + loc.Latitude;
@@ -130,7 +132,14 @@ namespace BetterTomorrow
 				0,
 				resultView.TextColors.DefaultColor,
 				2000));
-			animationStack.Start();
+
+            var loadingSpinner = FindViewById<ProgressBar>(Resource.Id.loadingSpinner);
+            animationStack.PushAnimation(new ViewFadeAnimator(loadingSpinner, 10, 100, 0));
+
+            var weatherSymbolView = FindViewById<ImageView>(Resource.Id.weatherSymbol);
+		    animationStack.PushAnimation(new ViewFadeAnimator(weatherSymbolView, 2000, to:0.5f));
+
+		    animationStack.Start();
 			animationStack.Clear();
 
 		    SetWeatherSymbol(WeatherFactory.CreateWeatherSymbol(tomorrowsTimeSerie));
@@ -178,18 +187,8 @@ namespace BetterTomorrow
 			var timeView = FindViewById<TextView>(Resource.Id.date);
 			var latTextView = FindViewById<TextView>(Resource.Id.latitudeTextView);
 			var longTextView = FindViewById<TextView>(Resource.Id.longitudeTextView);
-            var weatherSymbolView = FindViewById<ImageView>(Resource.Id.weatherSymbol);
+		    
             var duration = 800;
-
-            animationStack.PushAnimation(new ViewPositionAnimator(
-                weatherSymbolView,
-                0.0f,
-                weatherSymbolView.GetX(),
-                weatherSymbolView.GetY(),
-                weatherSymbolView.GetY(),
-                duration));
-
-            animationStack.AddDelay(200);
 
             animationStack.PushAnimation(new ViewPositionAnimator(
                 timeView,

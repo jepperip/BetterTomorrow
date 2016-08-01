@@ -22,7 +22,7 @@ namespace BetterTomorrow.UI
 			textView.SetTextColor(new Color(from));
 			var animator = ValueAnimator.OfArgb(from, to);
 			animator.SetDuration(duration);
-			animator.Update += (object sender, ValueAnimator.AnimatorUpdateEventArgs e) =>
+			animator.Update += (sender, e) =>
 			{
 				textView.SetTextColor(new Color((int)e.Animation.AnimatedValue));
 			};
@@ -32,6 +32,27 @@ namespace BetterTomorrow.UI
 
 		public List<ValueAnimator> Animators { get; private set; } = new List<ValueAnimator>();
 	}
+
+    class ViewFadeAnimator : IAnimatable
+    {
+        public ViewFadeAnimator(
+            View imageView,
+            int duration,
+            float from = 0.0f,
+            float to = 1.0f)
+        {
+            imageView.Alpha = from;
+            var animator = ValueAnimator.OfFloat(from, to);
+            animator.SetDuration(duration);
+            animator.Update += (sender, e) =>
+            {
+                imageView.Alpha = (float)e.Animation.AnimatedValue;
+            };
+            Animators.Add(animator);
+        }
+
+        public List<ValueAnimator> Animators { get; } = new List<ValueAnimator>();
+    }
 
 	class ViewPositionAnimator : IAnimatable
 	{
