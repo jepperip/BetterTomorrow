@@ -11,6 +11,9 @@ using BetterTomorrow.Network.SMHI;
 using BetterTomorrow.Network.SMHI.Data;
 using BetterTomorrow.UI;
 using System;
+using System.Collections.Generic;
+using BetterTomorrow.UI.Views;
+using BetterTomorrow.WheaterDataProvider;
 
 namespace BetterTomorrow
 {
@@ -20,6 +23,7 @@ namespace BetterTomorrow
 		Locator locator;
 		AnimationStack animationStack;
 		View mainView;
+
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
@@ -30,6 +34,14 @@ namespace BetterTomorrow
 			SetContentView(Resource.Layout.Main);
 			mainView = FindViewById<View>(Resource.Id.mainView);
 			mainView.ViewTreeObserver.AddOnGlobalLayoutListener(this);
+
+			var items = new List<WeatherElementModel>
+			{
+				new WeatherElementModel("Temperature", 21.3f, "C")
+			};
+
+			FindViewById<ListView>(Resource.Id.MyListView)
+				.Adapter = new WeatherElementListAdapter(this, items);
 		}
 
 		protected override void OnResume()
@@ -49,11 +61,13 @@ namespace BetterTomorrow
 			latView.Text = "Lat : " + loc.Latitude;
 			longView.Text = "Long : " + loc.Longitude;
 
+			string formattedRest = "/api/category/pmp2g/version/2/geotype/point/" +
+			  $"lon/{loc.Longitude.ToString("F6")}/lat/{loc.Latitude.ToString("F6")}/data.json";
+
 			string jsonData;
 			var res = HttpRequestService.TryGet(
 				GetString(Resource.String.SMHI_SERVICE_URL),
-				"/api/category/pmp2g/version/2/geotype/point/" +
-				$"lon/{loc.Longitude.ToString("F6")}/lat/{loc.Latitude.ToString("F6")}/data.json",
+				formattedRest,
 				HttpContentType.Json, out jsonData);
 
 			SmhiResponse r;

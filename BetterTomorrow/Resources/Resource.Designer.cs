@@ -60,8 +60,17 @@ namespace BetterTomorrow
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f050006
+			public const int MyListView = 2131034118;
+			
 			// aapt resource value: 0x7f050002
 			public const int OnlineCheckBox = 2131034114;
+			
+			// aapt resource value: 0x7f050007
+			public const int WeatherElement_Name = 2131034119;
+			
+			// aapt resource value: 0x7f050008
+			public const int WeatherElement_Value = 2131034120;
 			
 			// aapt resource value: 0x7f050003
 			public const int latitudeTextView = 2131034115;
@@ -93,6 +102,9 @@ namespace BetterTomorrow
 			
 			// aapt resource value: 0x7f030000
 			public const int Main = 2130903040;
+			
+			// aapt resource value: 0x7f030001
+			public const int WeatherElementView = 2130903041;
 			
 			static Layout()
 			{
