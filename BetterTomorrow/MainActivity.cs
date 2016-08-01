@@ -1,6 +1,4 @@
-﻿using Android.Animation;
-using Android.App;
-using Android.Graphics;
+﻿using Android.App;
 using Android.Locations;
 using Android.Net;
 using Android.OS;
@@ -12,17 +10,18 @@ using BetterTomorrow.Network.SMHI.Data;
 using BetterTomorrow.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BetterTomorrow.UI.Views;
-using BetterTomorrow.WheaterDataProvider;
+using BetterTomorrow.WheaterData;
 
 namespace BetterTomorrow
 {
 	[Activity(Label = "BetterTomorrow", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity, ViewTreeObserver.IOnGlobalLayoutListener
 	{
-		Locator locator;
-		AnimationStack animationStack;
-		View mainView;
+		private Locator locator;
+		private AnimationStack animationStack;
+		private View mainView;
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -34,14 +33,6 @@ namespace BetterTomorrow
 			SetContentView(Resource.Layout.Main);
 			mainView = FindViewById<View>(Resource.Id.mainView);
 			mainView.ViewTreeObserver.AddOnGlobalLayoutListener(this);
-
-			var items = new List<WeatherElementModel>
-			{
-				new WeatherElementModel("Temperature", 21.3f, "C")
-			};
-
-			FindViewById<ListView>(Resource.Id.MyListView)
-				.Adapter = new WeatherElementListAdapter(this, items);
 		}
 
 		protected override void OnResume()
@@ -61,68 +52,100 @@ namespace BetterTomorrow
 			latView.Text = "Lat : " + loc.Latitude;
 			longView.Text = "Long : " + loc.Longitude;
 
-			string formattedRest = "/api/category/pmp2g/version/2/geotype/point/" +
-			  $"lon/{loc.Longitude.ToString("F6")}/lat/{loc.Latitude.ToString("F6")}/data.json";
-
-			string jsonData;
-			var res = HttpRequestService.TryGet(
-				GetString(Resource.String.SMHI_SERVICE_URL),
-				formattedRest,
-				HttpContentType.Json, out jsonData);
-
-			SmhiResponse r;
-			if (new SmhiJsonParser().TryParse(jsonData, out r))
+			SmhiResponse response;
+			if(!TryGetResponse(loc, out response))
 			{
-				var now = DateTime.Now;
+				return;
+			}
 
-				float currentDayAverage = 0.0f;
-				int currentDayCount = 0;
-				float nextDayAverage = 0.0f;
-				int nextDayCount = 0;
-				foreach (var timeSerie in r.TimeSeries)
+			var now = DateTime.Now;
+
+			float currentDayAverage = 0.0f;
+			int currentDayCount = 0;
+			float nextDayAverage = 0.0f;
+			int nextDayCount = 0;
+
+			foreach (var timeSerie in response.TimeSeries)
+			{
+				if (timeSerie.ValidTime.DayOfYear > now.DayOfYear + 2)
 				{
-					if (timeSerie.ValidTime.DayOfYear > now.DayOfYear + 2)
-					{
-						break;
-					}
-
-					foreach (var parameter in timeSerie.Parameters)
-					{
-						if (string.Equals(parameter.Name, "t"))
-						{
-							if (timeSerie.ValidTime.DayOfYear == now.DayOfYear)
-							{
-								currentDayAverage += parameter.Values[0];
-								currentDayCount++;
-							}
-							else
-							{
-								nextDayAverage += parameter.Values[0];
-								nextDayCount++;
-							}
-
-							break;
-						}
-					}
+					break;
 				}
 
-				currentDayAverage /= currentDayCount;
-				nextDayAverage /= nextDayCount;
-				var delta = nextDayAverage - currentDayAverage;
+				foreach (var parameter in timeSerie.Parameters)
+				{
+					if (string.Equals(parameter.Name, "t"))
+					{
+						if (timeSerie.ValidTime.DayOfYear == now.DayOfYear)
+						{
+							currentDayAverage += parameter.Values[0];
+							currentDayCount++;
+						}
+						else
+						{
+							nextDayAverage += parameter.Values[0];
+							nextDayCount++;
+						}
 
-				var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
-				resultView.Text = nextDayAverage > currentDayAverage ?
+						break;
+					}
+				}
+			}
+
+			var tomorrowsTimeSerie = response
+				.TimeSeries
+				.First(
+					s => s.ValidTime.DayOfYear == now.DayOfYear + 1 && s.ValidTime.Hour == now.Hour);
+
+			//var items = new List<WeatherElementModel>
+			//{
+			//	WeatherFactory.CreateTempature(tomorrowsTimeSerie),
+			//	WeatherFactory.CreateThunderProbability(tomorrowsTimeSerie)
+			//};
+
+		    var items = WeatherFactory.GetAll(tomorrowsTimeSerie).ToList();
+
+			FindViewById<ListView>(Resource.Id.MyListView)
+				.Adapter = new WeatherElementListAdapter(this, items);
+
+			currentDayAverage /= currentDayCount;
+			nextDayAverage /= nextDayCount;
+			var delta = nextDayAverage - currentDayAverage;
+
+			var resultView = FindViewById<TextView>(Resource.Id.resultTextView);
+			resultView.Text = nextDayAverage > currentDayAverage ?
 				$"Hitler was right all along {delta}" :
 				$"The holocaust never happened {delta}";
 
-				animationStack.PushAnimation(new TextViewColorAnimator(
-						resultView,
-						0,
-						resultView.TextColors.DefaultColor,
-						2000));
-				animationStack.Start();
-				animationStack.Clear();
+			animationStack.PushAnimation(new TextViewColorAnimator(
+				resultView,
+				0,
+				resultView.TextColors.DefaultColor,
+				2000));
+			animationStack.Start();
+			animationStack.Clear();
+		}
+
+		private bool TryGetResponse(Location loc, out SmhiResponse response)
+		{
+			response = null;
+			var longitude = (int)loc.Longitude;
+			var latitude = (int)loc.Latitude;
+
+			string formattedRest = "/api/category/pmp2g/version/2/geotype/point/" +
+				$"lon/{longitude}/lat/{latitude}/data.json";
+
+			string jsonData;
+
+			if (!HttpRequestService.TryGet(
+				GetString(Resource.String.SMHI_SERVICE_URL),
+				formattedRest,
+				HttpContentType.Json, out jsonData))
+			{
+				return false;
 			}
+
+			return new SmhiJsonParser().TryParse(jsonData, out response);
 		}
 
 		private void Animate()

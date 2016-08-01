@@ -68,10 +68,11 @@
     <Compile Include="Network\SMHI\Data\TimeSerie.cs" />
     <Compile Include="UI\AnimationStack.cs" />
     <Compile Include="UI\Views\WeatherElementListAdapter.cs" />
-    <Compile Include="WheaterDataProvider\WeatherElementModel.cs" />
+    <Compile Include="WheaterData\WeatherElementModel.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Network\NetworkStatus.cs" />
+    <Compile Include="WheaterData\WeatherFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />

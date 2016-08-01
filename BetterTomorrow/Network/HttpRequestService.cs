@@ -11,7 +11,7 @@ namespace BetterTomorrow.Network
 			result = string.Empty;
 
 			var urlRest = $"{url}{rest}";
-			var request = HttpWebRequest.Create(urlRest);
+			var request = WebRequest.Create(urlRest);
 			var type = GetContentType(contentType);
 			if(string.IsNullOrEmpty(type))
 			{
@@ -24,25 +24,38 @@ namespace BetterTomorrow.Network
 
 			Console.WriteLine($"Created web request: {urlRest}");
 
-			using (var response = request.GetResponse() as HttpWebResponse)
+			try
 			{
-				if(response.StatusCode != HttpStatusCode.OK)
+				using (var response = request.GetResponse() as HttpWebResponse)
 				{
-					Console.WriteLine($"Error in GET request: {urlRest} request returned {response.StatusCode}");
-					return false;
-				}
-
-				using (var reader = new StreamReader(response.GetResponseStream()))
-				{
-					var content = reader.ReadToEnd();
-					if(string.IsNullOrWhiteSpace(content))
+					if (response == null)
 					{
-						Console.WriteLine($"Error in GET request: response to {urlRest} was empty");
 						return false;
 					}
 
-					result = content;
+					if(response.StatusCode != HttpStatusCode.OK)
+					{
+						Console.WriteLine($"Error in GET request: {urlRest} request returned {response.StatusCode}");
+						return false;
+					}
+
+					using (var reader = new StreamReader(response.GetResponseStream()))
+					{
+						var content = reader.ReadToEnd();
+						if(string.IsNullOrWhiteSpace(content))
+						{
+							Console.WriteLine($"Error in GET request: response to {urlRest} was empty");
+							return false;
+						}
+
+						result = content;
+					}
 				}
+			}
+			catch (WebException e)
+			{
+				Console.WriteLine($"Error in GET request: {urlRest}, {e.Message}");
+				return false;
 			}
 
 			Console.WriteLine($"Http GET request to {urlRest} succeded\nResponse:\n{result}");

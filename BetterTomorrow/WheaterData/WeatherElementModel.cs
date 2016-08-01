@@ -1,4 +1,4 @@
-namespace BetterTomorrow.WheaterDataProvider
+namespace BetterTomorrow.WheaterData
 {
 	public class WeatherElementModel
 	{

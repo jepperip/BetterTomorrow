@@ -3,7 +3,7 @@ using System.Globalization;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
-using BetterTomorrow.WheaterDataProvider;
+using BetterTomorrow.WheaterData;
 
 namespace BetterTomorrow.UI.Views
 {
@@ -32,6 +32,8 @@ namespace BetterTomorrow.UI.Views
 				items[position].Name;
 			row.FindViewById<TextView>(Resource.Id.WeatherElement_Value).Text =
 				items[position].Value.ToString(CultureInfo.InvariantCulture);
+			row.FindViewById<TextView>(Resource.Id.WeatherElement_Unit).Text =
+				items[position].Unit.ToString(CultureInfo.InvariantCulture);
 
 			return row;
 		}

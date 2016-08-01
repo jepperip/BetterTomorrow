@@ -69,6 +69,9 @@ namespace BetterTomorrow
 			// aapt resource value: 0x7f050007
 			public const int WeatherElement_Name = 2131034119;
 			
+			// aapt resource value: 0x7f050009
+			public const int WeatherElement_Unit = 2131034121;
+			
 			// aapt resource value: 0x7f050008
 			public const int WeatherElement_Value = 2131034120;
 			
