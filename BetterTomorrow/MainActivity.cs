@@ -9,7 +9,7 @@ using BetterTomorrow.Network.SMHI;
 using BetterTomorrow.Network.SMHI.Data;
 using BetterTomorrow.UI;
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using BetterTomorrow.UI.Views;
 using BetterTomorrow.WheaterData;
@@ -22,6 +22,8 @@ namespace BetterTomorrow
 		private Locator locator;
 		private AnimationStack animationStack;
 		private View mainView;
+	    private static readonly DateTime Today = DateTime.Now;
+	    private DateTime sampleTime = Today.AddDays(1);
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -38,10 +40,16 @@ namespace BetterTomorrow
 		protected override void OnResume()
 		{
 			base.OnResume();
-			var statusView = FindViewById<CheckBox>(Resource.Id.OnlineCheckBox);
-			statusView.Checked = IsConnected;
 
-			locator.RequestLocation(OnLocationReceived);
+            var weatherSymbolView = FindViewById<ImageView>(Resource.Id.weatherSymbol);
+            weatherSymbolView.SetImageResource(Resource.Drawable.s_1);
+
+            SetSampleTime();
+
+            if (IsConnected)
+		    {
+                locator.RequestLocation(OnLocationReceived);
+		    }
 		}
 
 		private void OnLocationReceived(Location loc)
@@ -95,20 +103,14 @@ namespace BetterTomorrow
 			var tomorrowsTimeSerie = response
 				.TimeSeries
 				.First(
-					s => s.ValidTime.DayOfYear == now.DayOfYear + 1 && s.ValidTime.Hour == now.Hour);
-
-			//var items = new List<WeatherElementModel>
-			//{
-			//	WeatherFactory.CreateTempature(tomorrowsTimeSerie),
-			//	WeatherFactory.CreateThunderProbability(tomorrowsTimeSerie)
-			//};
+					s => s.ValidTime.DayOfYear == sampleTime.DayOfYear && s.ValidTime.Hour == sampleTime.Hour);
 
 		    var items = WeatherFactory.GetAll(tomorrowsTimeSerie).ToList();
 
-			FindViewById<ListView>(Resource.Id.MyListView)
-				.Adapter = new WeatherElementListAdapter(this, items);
+		    var list = FindViewById<ListView>(Resource.Id.MyListView);
+            list.Adapter = new WeatherElementListAdapter(this, items);
 
-			currentDayAverage /= currentDayCount;
+            currentDayAverage /= currentDayCount;
 			nextDayAverage /= nextDayCount;
 			var delta = nextDayAverage - currentDayAverage;
 
@@ -124,9 +126,26 @@ namespace BetterTomorrow
 				2000));
 			animationStack.Start();
 			animationStack.Clear();
+
+		    SetWeatherSymbol(WeatherFactory.CreateWeatherSymbol(tomorrowsTimeSerie));
 		}
 
-		private bool TryGetResponse(Location loc, out SmhiResponse response)
+	    private void SetSampleTime()
+	    {
+	        var timeView = FindViewById<TextView>(Resource.Id.date);
+	        timeView.Text = sampleTime.ToString(CultureInfo.InvariantCulture);
+	    }
+
+	    private void SetWeatherSymbol(WeatherElementModel weatherSymbolData)
+	    {
+            var weatherSymbolView = FindViewById<ImageView>(Resource.Id.weatherSymbol);
+
+	        int weatherNr = (int)weatherSymbolData.Value;
+	        int resId = Resources.GetIdentifier($"s_{weatherNr}", "drawable", PackageName);
+            weatherSymbolView.SetImageResource(resId);
+        }
+
+	    private bool TryGetResponse(Location loc, out SmhiResponse response)
 		{
 			response = null;
 			var longitude = (int)loc.Longitude;
@@ -150,28 +169,28 @@ namespace BetterTomorrow
 
 		private void Animate()
 		{
-			var statusView = FindViewById<CheckBox>(Resource.Id.OnlineCheckBox);
-			var onlineTextView = FindViewById<TextView>(Resource.Id.textView1);
+			var timeView = FindViewById<TextView>(Resource.Id.date);
 			var latTextView = FindViewById<TextView>(Resource.Id.latitudeTextView);
 			var longTextView = FindViewById<TextView>(Resource.Id.longitudeTextView);
-			var duration = 800;
+            var weatherSymbolView = FindViewById<ImageView>(Resource.Id.weatherSymbol);
+            var duration = 800;
 
-			animationStack.PushAnimation(new ViewPositionAnimator(
-				onlineTextView,
+            animationStack.PushAnimation(new ViewPositionAnimator(
+                weatherSymbolView,
+                0.0f,
+                weatherSymbolView.GetX(),
+                weatherSymbolView.GetY(),
+                weatherSymbolView.GetY(),
+                duration));
+
+            animationStack.AddDelay(200);
+
+            animationStack.PushAnimation(new ViewPositionAnimator(
+                timeView,
 				0.0f,
-				onlineTextView.GetX(),
-				onlineTextView.GetY(),
-				onlineTextView.GetY(),
-				duration));
-
-			animationStack.AddDelay(200);
-
-			animationStack.PushAnimation(new ViewPositionAnimator(
-				statusView,
-				0.0f,
-				statusView.GetX(),
-				statusView.GetY(),
-				statusView.GetY(),
+                timeView.GetX(),
+                timeView.GetY(),
+                timeView.GetY(),
 				duration));
 
 			animationStack.AddDelay(200);
@@ -192,7 +211,8 @@ namespace BetterTomorrow
 				longTextView.GetY(),
 				duration));
 
-			animationStack.Start();
+
+            animationStack.Start();
 			animationStack.Clear();
 		}
 

@@ -99,7 +99,26 @@
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\s_1.png" />
+    <AndroidResource Include="Resources\drawable\s_10.png" />
+    <AndroidResource Include="Resources\drawable\s_11.png" />
+    <AndroidResource Include="Resources\drawable\s_12.png" />
+    <AndroidResource Include="Resources\drawable\s_13.png" />
+    <AndroidResource Include="Resources\drawable\s_14.png" />
+    <AndroidResource Include="Resources\drawable\s_15.png" />
+    <AndroidResource Include="Resources\drawable\s_2.png" />
+    <AndroidResource Include="Resources\drawable\s_3.png" />
+    <AndroidResource Include="Resources\drawable\s_4.png" />
+    <AndroidResource Include="Resources\drawable\s_5.png" />
+    <AndroidResource Include="Resources\drawable\s_6.png" />
+    <AndroidResource Include="Resources\drawable\s_7.png" />
+    <AndroidResource Include="Resources\drawable\s_8.png" />
+    <AndroidResource Include="Resources\drawable\s_9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\drawable\SMHI\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.

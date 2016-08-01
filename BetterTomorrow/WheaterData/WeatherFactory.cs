@@ -68,6 +68,11 @@ namespace BetterTomorrow.WheaterData
 			return ConvertToWeatherModel(timeSerie, ParameterNames.ThunderProbability);
 		}
 
+	    public static WeatherElementModel CreateWeatherSymbol(TimeSerie timeSerie)
+	    {
+            return ConvertToWeatherModel(timeSerie, ParameterNames.WeatherSymbol);
+        }
+
 	    public static IEnumerable<WeatherElementModel> GetAll(TimeSerie timeSerie)
 	    {
 	        return units.Select(s => ConvertToWeatherModel(timeSerie, s.Key)).Where(s => s != null);
