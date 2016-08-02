@@ -64,7 +64,14 @@ namespace BetterTomorrow
             var test = new List<WeatherPageModel>();
 		    foreach (var timeSerie in response.TimeSeries)
 		    {
-		        var elements = WeatherFactory.GetAll(timeSerie);
+		        //var elements = WeatherFactory.GetAll(timeSerie);
+		        var elements = new[]
+		        {
+		            WeatherFactory.CreateTempature(timeSerie),
+                    WeatherFactory.CreateThunderProbability(timeSerie),
+                    WeatherFactory.CreateWindSpeed(timeSerie),
+                    WeatherFactory.CreatePrecipitation(timeSerie)
+		        };
 		        var weatherSymbol = WeatherFactory.CreateWeatherSymbol(timeSerie);
                 var page = new WeatherPageModel(elements.ToList(), (int)weatherSymbol.Value, timeSerie.ValidTime, loc, hitler);
                 test.Add(page);

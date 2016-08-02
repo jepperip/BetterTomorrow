@@ -73,6 +73,15 @@ namespace BetterTomorrow.WeatherData
             return ConvertToWeatherModel(timeSerie, ParameterNames.WeatherSymbol);
         }
 
+	    public static WeatherElementModel CreatePrecipitation(TimeSerie timeSerie)
+	    {
+	        var minPrec = ConvertToWeatherModel(timeSerie, ParameterNames.MinPrecIntensity).Value;
+            var maxPrec = ConvertToWeatherModel(timeSerie, ParameterNames.MaxPrecIntensity).Value;
+
+	        var avarage = minPrec + ((maxPrec - minPrec)/2);
+            return new WeatherElementModel("Avarage Precipitation", avarage, "mm/h");
+        }
+
 	    public static IEnumerable<WeatherElementModel> GetAll(TimeSerie timeSerie)
 	    {
 	        return units.Select(s => ConvertToWeatherModel(timeSerie, s.Key)).Where(s => s != null);
