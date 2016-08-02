@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BetterTomorrow.Network.SMHI.Data;
 
-namespace BetterTomorrow.WheaterData
+namespace BetterTomorrow.WeatherData
 {
 	public static class WeatherFactory
 	{

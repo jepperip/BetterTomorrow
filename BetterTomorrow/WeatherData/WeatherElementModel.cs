@@ -1,11 +1,11 @@
-namespace BetterTomorrow.WheaterData
+namespace BetterTomorrow.WeatherData
 {
 	public class WeatherElementModel
 	{
 		public WeatherElementModel(string name, float value, string unit)
 		{
 			Name = name;
-			Value = value;
+		    Value = value;
 			Unit = unit;
 		}
 
